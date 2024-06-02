@@ -141,6 +141,9 @@ class Maze():
             for cell in row:
                 self._draw_cell(cell)
 
+        # Solve the maze
+        self.solve()
+
 
     def _draw_cell(self, cell):
         cell.draw()
@@ -164,7 +167,6 @@ class Maze():
         if i == self._num_cols - 1 and j == self._num_rows - 1:
             return
         
-
         visited = (i, j)
         self.visited_set.add(visited)
         valid_paths = self._possible_paths(i, j)
@@ -178,9 +180,6 @@ class Maze():
         for path in valid_paths:
             if path not in self.visited_set:
                 random_choice = path
-        
-
-            
 
         # break wall to that node
         # i represents the row and j represents the column
@@ -232,3 +231,51 @@ class Maze():
             possible_paths_set.add((i, j - 1))
 
         return possible_paths_set
+
+
+    def solve(self):
+        return self._solve_dfs_r(0, 0)
+
+    def _solve_dfs_r(self, i, j):
+        exit_cell = self._cells[self._num_cols - 1][self._num_rows - 1]
+        current_cell = self._cells[i][j]
+        current_cell._visited = True
+        if current_cell == exit_cell:
+            return True
+        print("=" * 80)
+        print(f"current cell {i}, {j}")
+        # get possible paths
+        possible_paths = list(self._possible_paths(i, j))
+        print(f"possible paths are {possible_paths}")
+        for path in possible_paths:
+            cell = self._cells[path[0]][path[1]]
+            print(f"checking path {path}")
+            if not cell._visited:
+                if cell.bottom_wall == False and current_cell.top_wall == False:
+                    current_cell.draw_move(cell)
+                    self._animate()
+                    print(f"drawing line between {path} to ({i}, {j})")
+                    if self._solve_dfs_r(path[0], path[1]):
+                        return True
+
+                elif cell.left_wall == False and current_cell.right_wall == False:
+                    current_cell.draw_move(cell)
+                    self._animate()
+                    print(f"drawing line between {path} to ({i}, {j})")
+                    if self._solve_dfs_r(path[0], path[1]):
+                        return True
+
+                elif cell.right_wall == False and current_cell.left_wall == False:
+                    current_cell.draw_move(cell)
+                    self._animate()
+                    print(f"drawing line between {path} to ({i}, {j})")
+                    if self._solve_dfs_r(path[0], path[1]):
+                        return True
+
+                elif cell.top_wall == False and current_cell.bottom_wall == False:
+                    current_cell.draw_move(cell)
+                    self._animate()
+                    print(f"drawing line between {path} to ({i}, {j})")
+                    if self._solve_dfs_r(path[0], path[1]):
+                        return True
+        return False
