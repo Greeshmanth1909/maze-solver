@@ -111,6 +111,8 @@ class Maze():
         self._win = win
         self._cells = []
         self.visited_set = set()
+        self.search_visited = []
+        self.search_to_visit = []
         self._create_cells()
         
 
@@ -240,6 +242,7 @@ class Maze():
         exit_cell = self._cells[self._num_cols - 1][self._num_rows - 1]
         current_cell = self._cells[i][j]
         current_cell._visited = True
+        self.search_visited.append(current_cell)
         if current_cell == exit_cell:
             return True
         print("=" * 80)
@@ -250,7 +253,7 @@ class Maze():
         for path in possible_paths:
             cell = self._cells[path[0]][path[1]]
             print(f"checking path {path}")
-            if not cell._visited:
+            if cell not in self.search_visited:
                 if cell.bottom_wall == False and current_cell.top_wall == False:
                     current_cell.draw_move(cell)
                     self._animate()
@@ -278,4 +281,5 @@ class Maze():
                     print(f"drawing line between {path} to ({i}, {j})")
                     if self._solve_dfs_r(path[0], path[1]):
                         return True
+        print(self.search_visited)
         return False
