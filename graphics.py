@@ -245,41 +245,44 @@ class Maze():
         self.search_visited.append(current_cell)
         if current_cell == exit_cell:
             return True
-        print("=" * 80)
-        print(f"current cell {i}, {j}")
         # get possible paths
-        possible_paths = list(self._possible_paths(i, j))
-        print(f"possible paths are {possible_paths}")
+        possible_paths = self._possible_paths(i, j)
+
         for path in possible_paths:
-            cell = self._cells[path[0]][path[1]]
-            print(f"checking path {path}")
-            if cell not in self.search_visited:
-                if cell.bottom_wall == False and current_cell.top_wall == False:
-                    current_cell.draw_move(cell)
-                    self._animate()
-                    print(f"drawing line between {path} to ({i}, {j})")
-                    if self._solve_dfs_r(path[0], path[1]):
-                        return True
+            next_i, next_j = path
+            next_cell = self._cells[next_i][next_j]
 
-                elif cell.left_wall == False and current_cell.right_wall == False:
-                    current_cell.draw_move(cell)
-                    self._animate()
-                    print(f"drawing line between {path} to ({i}, {j})")
-                    if self._solve_dfs_r(path[0], path[1]):
-                        return True
+            # Check if the next cell is already visited
+            if next_cell._visited:
+                continue
 
-                elif cell.right_wall == False and current_cell.left_wall == False:
-                    current_cell.draw_move(cell)
-                    self._animate()
-                    print(f"drawing line between {path} to ({i}, {j})")
-                    if self._solve_dfs_r(path[0], path[1]):
-                        return True
+            # Determine the direction of movement and check the walls
+            if next_i > i and not current_cell.bottom_wall and not next_cell.top_wall:  # Moving down
+                current_cell.draw_move(next_cell)
+                self._animate()
+                if self._solve_dfs_r(next_i, next_j):
+                    return True
+                current_cell.draw_move(next_cell, undo=True)
 
-                elif cell.top_wall == False and current_cell.bottom_wall == False:
-                    current_cell.draw_move(cell)
-                    self._animate()
-                    print(f"drawing line between {path} to ({i}, {j})")
-                    if self._solve_dfs_r(path[0], path[1]):
-                        return True
-        print(self.search_visited)
+            elif next_i < i and not current_cell.top_wall and not next_cell.bottom_wall:  # Moving up
+                current_cell.draw_move(next_cell)
+                self._animate()
+                if self._solve_dfs_r(next_i, next_j):
+                    return True
+                current_cell.draw_move(next_cell, undo=True)
+
+            elif next_j > j and not current_cell.right_wall and not next_cell.left_wall:  # Moving right
+                current_cell.draw_move(next_cell)
+                self._animate()
+                if self._solve_dfs_r(next_i, next_j):
+                    return True
+                current_cell.draw_move(next_cell, undo=True)
+
+            elif next_j < j and not current_cell.left_wall and not next_cell.right_wall:  # Moving left
+                current_cell.draw_move(next_cell)
+                self._animate()
+                if self._solve_dfs_r(next_i, next_j):
+                    return True
+                current_cell.draw_move(next_cell, undo=True)
+
         return False
