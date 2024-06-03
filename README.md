@@ -1,6 +1,9 @@
 # Maze Solver
 A python program that randomly generates and solves mazes
 
+<img width="652" alt="Screenshot 2024-06-04 at 12 21 40 AM 1" src="https://github.com/Greeshmanth1909/maze-solver/assets/91905738/b36999df-c6b7-4b7a-82ef-e3966a35d2b9">
+
+
 ## Requirements
 - python 3.9.x or higher
 - tkinter
